@@ -7,9 +7,12 @@ app = Sanic()
 
 
 def route(url, f):
-    async def F(*params):
-        effect_params = [pure(i) for i in params]
-        x = f(*effect_params).execute
+    async def F(*params, **kParames):
+        _params = [pure(i) for i in params]
+        _kParams = dict()
+        for i in kParames:
+            _kParams[i] = pure(kParames[i])
+        x = f(*_params, **_kParams).execute
         return x
     app.route(url)(F)
 
